@@ -1,62 +1,59 @@
 <template>
   <div class="search-wrapper">
-   <div class="search-head">
-     <van-icon name="arrow-left" class="arr-left" @click="$router.goBack()" />
-     <van-search
-     class="search-content"
-    v-model="value"
-    show-action
-    :placeholder="place"
-    @search="onSearch"
-    @input="input"
-    @focus="focus"
-    autofocus
-  >
-    <template #action v-if="showList">
-      <div @touchend="onSearch(value)">搜索</div>
-    </template>
-    <template #action v-else>
-      <van-icon
-      name="cart-o"
-      id="shop-car"
-      class="shop-car"
-      :badge="badge"
-      @click="$router.push('/home/shopping')"/>
-    </template>
-  </van-search>
-   </div>
-   <div class="like-search" v-if="likeList.length && showList">
-     <van-list>
-       <van-cell
-       v-for="item in likeList"
-       :key="item"
-       @click="onSearch(item)"
-       >
-        <template>
-          <span class="custom-title" v-html="formatHTML(item)"></span>
+    <div class="search-head">
+      <van-icon name="arrow-left" class="arr-left" @click="$router.goBack()" />
+      <van-search
+        class="search-content"
+        v-model="value"
+        show-action
+        :placeholder="place"
+        @search="onSearch"
+        @input="input"
+        @focus="focus"
+        autofocus
+      >
+        <template #action v-if="showList">
+          <div @touchend="onSearch(value)">搜索</div>
         </template>
-       </van-cell>
-     </van-list>
-   </div>
-   <div class="goods-list" v-if="!showList">
-     <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有了"
-          @load="onLoad"
-          :immediate-check="false"
-        >
-          <goods-card
-           v-for="item in goodsList"
-           :key="item.id"
-           v-bind="item"
-           :num="counterMap[item.id]"
-          ></goods-card>
-        </van-list>
-   </div>
-   <div class="my-history" v-if="likeList.length <= 0 && showList">
-     <my-history :searchList="searchList" @search="onSearch"></my-history>
-   </div>
+        <template #action v-else>
+          <van-icon
+            name="cart-o"
+            id="shop-car"
+            class="shop-car"
+            :badge="badge"
+            @click="$router.push('/home/shopping')"
+          />
+        </template>
+      </van-search>
+    </div>
+    <div class="like-search" v-if="likeList.length && showList">
+      <van-list>
+        <van-cell v-for="item in likeList" :key="item" @click="onSearch(item)">
+          <template>
+            <span class="custom-title" v-html="formatHTML(item)"></span>
+          </template>
+        </van-cell>
+      </van-list>
+    </div>
+    <div class="goods-list" v-if="!showList">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有了"
+        @load="onLoad"
+        :immediate-check="false"
+      >
+        <goods-card
+          v-for="item in goodsList"
+          :key="item.id"
+          v-bind="item"
+          :num="counterMap[item.id]"
+        ></goods-card>
+      </van-list>
+    </div>
+    <div class="my-history" v-if="likeList.length <= 0 && showList">
+      <my-history :searchList="searchList" @search="onSearch"></my-history>
+    </div>
   </div>
 </template>
 
@@ -91,7 +88,10 @@ export default {
       counterMap: (state) => state.counterMap,
     }),
     badge() {
-      const count = Object.values(this.counterMap).reduce((prev, next) => prev + next, 0);
+      const count = Object.values(this.counterMap).reduce(
+        (prev, next) => prev + next,
+        0,
+      );
       if (count > 99) {
         return '99+';
       }
@@ -121,7 +121,10 @@ export default {
         result.time = new Date().getTime();
         this.searchList.sort((a, b) => b.time - a.time);
       } else {
-        this.searchList.unshift({ value: this.value, time: new Date().getTime() });
+        this.searchList.unshift({
+          value: this.value,
+          time: new Date().getTime(),
+        });
         if (this.searchList.length >= 11) {
           this.searchList.pop();
         }
@@ -167,51 +170,51 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .search-wrapper {
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
+.search-wrapper {
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: #fff;
+  .search-head {
+    width: 345px;
     background: #fff;
-    .search-head {
-      width: 345px;
-      background: #fff;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 15px;
-      z-index: 22;
-      .arr-left {
-        font-size: 22px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 15px;
+    z-index: 22;
+    .arr-left {
+      font-size: 22px;
+    }
+    .search-content {
+      flex: 1;
+      .shop-car {
+        font-size: 15px;
       }
-      .search-content {
-        flex: 1;
-        .shop-car {
-          font-size: 15px;
-        }
-      }
-    }
-    .like-search {
-      position: relative;
-      top: 50px;
-      width: 100%;
-      box-sizing: border-box;
-      padding-left: 30px;
-    }
-    .goods-list {
-      position: relative;
-      width: 345px;
-      margin: 48px auto 0;
-      z-index: 10;
-      background: #fff;
-    }
-    .my-history {
-      width: 350px;
-      position: absolute;
-      top: 35px;
-      left: 10px;
-      z-index: 1;
     }
   }
+  .like-search {
+    position: relative;
+    top: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 30px;
+  }
+  .goods-list {
+    position: relative;
+    width: 345px;
+    margin: 48px auto 0;
+    z-index: 10;
+    background: #fff;
+  }
+  .my-history {
+    width: 350px;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    z-index: 1;
+  }
+}
 </style>

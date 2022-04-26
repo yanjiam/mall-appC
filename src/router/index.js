@@ -4,6 +4,10 @@ import Home from '../views/Home.vue';
 import Classify from '../views/Classify.vue';
 import Shopping from '../views/Shopping.vue';
 import Search from '../views/Search.vue';
+import Index from '../views/Index.vue';
+import My from '../views/My.vue';
+import Login from '../views/Login.vue';
+import Register from '../views/Register.vue';
 
 VueRouter.prototype.back = false;
 VueRouter.prototype.goBack = function goBack() {
@@ -26,6 +30,14 @@ const routes = [
         path: 'shopping',
         component: Shopping,
       },
+      {
+        path: 'index',
+        component: Index,
+      },
+      {
+        path: 'my',
+        component: My,
+      },
     ],
   },
   {
@@ -34,8 +46,18 @@ const routes = [
     component: Search,
   },
   {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+  },
+  {
     path: '*',
-    redirect: '/home/classify',
+    redirect: '/home/index',
   },
 ];
 

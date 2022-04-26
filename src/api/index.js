@@ -1,46 +1,102 @@
 import Axios from 'axios';
 import baseURL, { URLS } from './URLS';
 
-const appkey = 'LiuDeHua_1616117821248';
-
 const request = Axios.create({
   baseURL,
-  params: {
-    appkey,
-  },
 });
-request.interceptors.response.use((value) => value.data);
+const requestUpload = Axios.create({
+  baseURL: 'http://mallapi.duyiedu.com',
+})
 
-const getSideList = (type) => request.get(
-  URLS.getSide,
-  { params: { type } },
+request.interceptors.response.use((value) => value.data);
+requestUpload.interceptors.response.use((value) => value.data);
+
+const upload = (file) => requestUpload.post(
+  'upload/images?appkey=LiuDeHua_1616117821248',
+  file,
+)
+const getCategoryList = () => request.post(
+  URLS.getCategory,
 );
 
-const getGoodsList = (type, page, size, sort) => request.get(
+const getSideList = (_id) => request.post(
+  URLS.getSide,
+  { _id },
+);
+
+const getGoodsList = (category, type, page, size, sort) => request.post(
   URLS.getGoodsList,
   {
-    params: {
-      type, size, sort, page,
-    },
+    category, type, size, page, sort,
+  },
+);
+const getAllGoodsList = (page, size) => request.post(
+  URLS.getAllGoodsList,
+  {
+    size, page,
   },
 );
 
-const likeSearch = (value) => request.get(
+const likeSearch = (value) => request.post(
   URLS.likeSearch,
-  { params: { likeValue: value } },
+  { likeValue: value },
 );
-const search = (type, page, size) => request.get(
+
+const search = (_id, page, size) => request.post(
   URLS.search,
-  { params: { type, page, size } },
+  { _id, page, size },
 );
-const getGoodsByIds = (value) => request.get(
+
+const getGoodsByIds = (value) => request.post(
   URLS.getGoodsByIds,
   { params: { value } },
 );
+
+const getShopCat = (pin) => request.post(
+  URLS.getShopCat,
+  { pin },
+);
+const addCart = (pin, productId, num) => request.post(
+  URLS.addCart,
+  { pin, productId, num },
+);
+
+const deleteCart = (_id) => request.post(
+  URLS.deleteCart,
+  { _id },
+);
+
+const login = (pin, passwd) => request.post(
+  URLS.login,
+  { pin, passwd },
+);
+const queryInfo = (pin) => request.post(
+  URLS.queryInfo,
+  { pin },
+);
+const changeInfo = (pin, passwd, username, avatar) => request.post(
+  URLS.changeInfo,
+  { pin, passwd, username, avatar },
+);
+const register = (pin, passwd, username, avatar) => request.post(
+  URLS.register,
+  { pin, passwd, username, avatar },
+);
+
 export default {
+  getCategoryList,
   getSideList,
   getGoodsList,
+  getAllGoodsList,
   search,
   likeSearch,
   getGoodsByIds,
+  getShopCat,
+  addCart,
+  deleteCart,
+  login,
+  queryInfo,
+  changeInfo,
+  upload,
+  register,
 };

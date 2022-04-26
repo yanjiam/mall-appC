@@ -1,21 +1,28 @@
 <template>
   <div id="app">
-    <transition :name="transitionName" :mode="this.$router.back ? 'out-in' : 'in-out' ">
+    <transition
+      :name="transitionName"
+      :mode="this.$router.back ? 'out-in' : 'in-out'"
+    >
       <router-view class="view"></router-view>
     </transition>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   created() {
-    const counterMap = JSON.parse(localStorage.getItem('goods')) || {};
-    this.$store.commit('setCounterMap', counterMap);
+    this.getShopCat();
   },
   data() {
     return {
       transitionName: 'left',
     };
+  },
+  methods: {
+    ...mapActions(['getShopCat']),
   },
   watch: {
     $route(to, from) {
@@ -34,17 +41,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .view {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    transition: transform .3s linear;
-  }
-  .left-enter {
-    transform: translate(100%, 0);
-  }
-   .right-leave-to {
-    transform: translate(100%, 0);
-  }
+#app {
+  font-family: FangSong;
+}
+.view {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  transition: transform 0.3s linear;
+}
+.left-enter {
+  transform: translate(100%, 0);
+}
+.right-leave-to {
+  transform: translate(100%, 0);
+}
 </style>
