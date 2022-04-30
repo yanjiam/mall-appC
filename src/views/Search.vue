@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import goodsCard from '../components/GoodsCard.vue';
 import myHistory from '../components/MyHistory.vue';
 
@@ -85,9 +84,6 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      counterMap: (state) => state.counterMap,
-    }),
     badge() {
       const count = Object.values(this.counterMap).reduce(
         (prev, next) => prev + next,
@@ -102,10 +98,11 @@ export default {
   methods: {
     async onLoad() {
       const value = await this.$api.search(this.value, this.page, this.size);
-      this.goodsList = [...this.goodsList, ...value.list];
+      if (value.state !== 0) return;
+      this.goodsList = [...this.goodsList, ...value.data];
       this.total = value.total;
       this.loading = false;
-      if (this.goodsList.length >= this.total) {
+      if (this.goodsList?.length >= this.total) {
         this.finished = true;
       } else {
         this.page += 1;
@@ -126,7 +123,7 @@ export default {
           value: this.value,
           time: new Date().getTime(),
         });
-        if (this.searchList.length >= 11) {
+        if (this.searchList?.length >= 11) {
           this.searchList.pop();
         }
       }
@@ -150,7 +147,7 @@ export default {
       } else {
         this.timer = setTimeout(async () => {
           const value = await this.$api.likeSearch(this.value);
-          this.likeList = value.result;
+          this.likeList = value.data;
           clearTimeout(this.timer);
           this.timer = null;
         }, 300);

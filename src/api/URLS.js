@@ -17,6 +17,7 @@ export const URLS = {
   addOrder: '/order/add',
   changeStatus: '/order/change',
   deleteOrder: '/order/delete',
+  likeSearch: 'products/like',
 };
 const baseURL = 'http://localhost:9527';
 export default baseURL;

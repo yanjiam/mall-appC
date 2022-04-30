@@ -41,12 +41,12 @@ const getAllGoodsList = (page, size) => request.post(
 
 const likeSearch = (value) => request.post(
   URLS.likeSearch,
-  { likeValue: value },
+  { searchWord: value },
 );
 
-const search = (_id, page, size) => request.post(
-  URLS.search,
-  { _id, page, size },
+const search = (value, page, size) => request.post(
+  URLS.getGoodsList,
+  { searchWord: value, page, size },
 );
 
 const getGoodsByIds = (_id) => request.post(
