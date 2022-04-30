@@ -13,6 +13,10 @@ export const URLS = {
   changeInfo: 'user/changeInfo',
   upload: '/upload/images',
   register: '/user/register',
+  getOrder: '/order/clist',
+  addOrder: '/order/add',
+  changeStatus: '/order/change',
+  deleteOrder: '/order/delete',
 };
 const baseURL = 'http://localhost:9527';
 export default baseURL;

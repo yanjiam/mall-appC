@@ -40,7 +40,7 @@ export default {
     ...mapActions(['addCart', 'deleteCart', 'getShopCat']),
     counter(num) {
       if (!getUserCookie().pin) {
-        Toast('用户未登录');
+        Toast.fail('用户未登录');
         return;
       }
       if (this.p_num === 1 && num === -1) {

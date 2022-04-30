@@ -15,6 +15,7 @@ export default new Vuex.Store({
     goodsList: [],
     type: null,
     shopCatList: [],
+    orderList: [],
   },
   mutations: {
     setSideList(state, list) {
@@ -41,6 +42,12 @@ export default new Vuex.Store({
     },
     setUserInfo(state, data) {
       state.userInfo = data;
+    },
+    setOrderList(state, list) {
+      state.orderList = [...state.orderList, ...list];
+    },
+    resetOrderList(state) {
+      state.orderList = [];
     },
   },
   actions: {
@@ -76,19 +83,57 @@ export default new Vuex.Store({
       const { data } = await api.getShopCat(pin);
       commit('setShopCatList', data);
     },
-    async addCart({ state, commit }, options) {
+    async addCart({ state }, options) {
       // eslint-disable-next-line no-underscore-dangle
       const pin = state.pin || getUserCookie().pin;
-      await api.addCart(pin, options.productId, options.num);
-      const { data } = await api.getShopCat(pin);
-      commit('setShopCatList', data);
+      const res = await api.addCart(pin, options.productId, options.num);
+      if (res.state === 0) {
+        this.dispatch('getShopCat');
+      }
     },
-    async deleteCart({ state, commit }, options) {
+    async deleteCart({ state }, options) {
+      console.log(state);
       // eslint-disable-next-line no-underscore-dangle
-      await api.deleteCart(options._id);
+      const res = await api.deleteCart(options._id);
+      if (res.state === 0) {
+        this.dispatch('getShopCat');
+      }
+    },
+    async getOrderList({ state, commit }, options) {
+      const { page, size, status } = options;
       const pin = state.pin || getUserCookie().pin;
-      const { data } = await api.getShopCat(pin);
-      commit('setShopCatList', data);
+      const res = await api.getOrderList(pin, page, size, status);
+      commit('setOrderList', res.data);
+      if (res.total > state.orderList.length) {
+        return true;
+      }
+      return false;
+    },
+    async addOrder({ state }, options) {
+      const pin = state.pin || getUserCookie().pin;
+      const res = await api.addOrder(options.product_list, pin, options.pay_num);
+      if (res.state === 0) {
+        return true;
+      }
+      return false;
+    },
+    async deleteOrder({ state }, options) {
+      console.log(state);
+      // eslint-disable-next-line no-underscore-dangle
+      const res = await api.deleteOrder(options._id);
+      if (res.state === 0) {
+        return true;
+      }
+      return false;
+    },
+    async changeStatus({ state }, options) {
+      console.log(state);
+      // eslint-disable-next-line no-underscore-dangle
+      const res = await api.changeStatus(options._id, options.status);
+      if (res.state === 0) {
+        return true;
+      }
+      return false;
     },
   },
   modules: {

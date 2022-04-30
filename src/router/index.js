@@ -8,6 +8,7 @@ import Index from '../views/Index.vue';
 import My from '../views/My.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
+import Order from '../views/Order.vue';
 
 VueRouter.prototype.back = false;
 VueRouter.prototype.goBack = function goBack() {
@@ -54,6 +55,11 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register,
+  },
+  {
+    path: '/order',
+    name: 'order',
+    component: Order,
   },
   {
     path: '*',

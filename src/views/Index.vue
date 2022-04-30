@@ -36,6 +36,7 @@
       </div>
       <van-list
         class="shopList-list"
+        offest="100"
         v-model="loading"
         :finished="finished"
         finished-text="没有了"
@@ -77,6 +78,12 @@ export default {
           link: '',
         },
       ],
+      gridList: [
+        {
+          icon: '',
+          text: '',
+        },
+      ],
       loading: false,
       finished: false,
       page: 1,
@@ -87,7 +94,6 @@ export default {
   },
   methods: {
     async onLoad() {
-      console.log('执行了');
       try {
         const value = await this.$api.getAllGoodsList({
           page: this.page,

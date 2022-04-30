@@ -53,14 +53,22 @@
     <div class="order">
       <div class="order-title">
         <h3>我的订单</h3>
-        <span>全部订单 ></span>
+        <span
+          @click="
+            () => {
+              $router.push('/order');
+            }
+          "
+          >全部订单 ></span
+        >
       </div>
-      <van-grid :border="false" center :column-num="5">
+      <van-grid :border="false" center :column-num="5" :clickable="true">
         <van-grid-item
           v-for="item in gridData2"
           :key="item.id"
           :icon="item.icon"
           :text="item.text"
+          @click.native="toOrder(item.id)"
         />
       </van-grid>
     </div>
@@ -68,7 +76,8 @@
 </template>
 
 <script>
-import { getUserCookie, removeUserCookie } from "../util/userCookie";
+import { Toast } from 'vant';
+import { getUserCookie, removeUserCookie } from '../util/userCookie';
 
 export default {
   components: {},
@@ -77,73 +86,87 @@ export default {
       showPopover: false,
       gridData1: [
         {
-          id: "balance",
-          text: "余额",
+          id: 'balance',
+          text: '余额',
           value: 0,
         },
         {
-          id: "coupon",
-          text: "优惠券",
+          id: 'coupon',
+          text: '优惠券',
           value: 0,
         },
         {
-          id: "coin",
-          text: "金币",
+          id: 'coin',
+          text: '金币',
           value: 0,
         },
         {
-          id: "integral",
-          text: "积分兑换",
+          id: 'integral',
+          text: '积分兑换',
           value: 0,
         },
       ],
       gridData2: [
         {
-          id: "awaitPay",
-          text: "待支付",
-          icon: "pending-payment",
+          id: 1,
+          text: '待支付',
+          icon: 'pending-payment',
         },
         {
-          id: "awaitSend",
-          text: "待配送",
-          icon: "tosend",
+          id: 2,
+          text: '待配送',
+          icon: 'tosend',
         },
         {
-          id: "sending",
-          text: "配送中",
-          icon: "logistics",
+          id: 3,
+          text: '配送中',
+          icon: 'logistics',
         },
         {
-          id: "awaitEvaluate",
-          text: "待评价",
-          icon: "other-pay",
+          id: 4,
+          text: '已完成',
+          icon: 'completed',
         },
         {
-          id: "afterSale",
-          text: "售后/退款",
-          icon: "after-sale",
+          id: 5,
+          text: '售后/退款',
+          icon: 'after-sale',
         },
       ],
       actions: [
-        { text: "修改个人信息", fun: "edit" },
-        { text: "退出登录", fun: "loginout" },
+        { text: '修改个人信息', fun: 'edit' },
+        { text: '退出登录', fun: 'loginout' },
       ],
       pin: '',
-      avatar: "",
-      username: "",
+      avatar: '',
+      username: '',
       power: 1,
     };
   },
   methods: {
     init() {
-      const { pin, avatar, power, username } = getUserCookie();
+      const {
+        pin, avatar, power, username,
+      } = getUserCookie();
       this.pin = pin;
       this.avatar = avatar;
       this.power = power;
       this.username = username;
     },
+    toOrder(status) {
+      if (status === 5) {
+        Toast.fail('暂不支持售后');
+        return;
+      }
+      this.$router.push({
+        path: '/order',
+        query: {
+          status,
+        },
+      });
+    },
     onSelect(action) {
-      if (action.fun === "loginout") {
+      if (action.fun === 'loginout') {
         removeUserCookie();
         this.init();
       } else {
@@ -151,8 +174,8 @@ export default {
           path: '/register',
           query: {
             pin: this.pin,
-          }
-        })
+          },
+        });
       }
     },
   },

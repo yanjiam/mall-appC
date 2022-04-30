@@ -64,25 +64,25 @@
 </template>
 
 <script>
-import { setCookie } from "../util/userCookie";
+import { setCookie } from '../util/userCookie';
 
 export default {
   data() {
     return {
-      title: "新用户注册",
-      btnText: "提交",
-      username: "",
-      avatar: "",
+      title: '新用户注册',
+      btnText: '提交',
+      username: '',
+      avatar: '',
       fileList: [],
-      pin: "",
-      passwd: "",
+      pin: '',
+      passwd: '',
       pattern: /^[\w-]+@[\w.-]+.com$/,
       isloading: false,
     };
   },
   methods: {
     onFailed(errorInfo) {
-      console.log("failed", errorInfo);
+      console.log('failed', errorInfo);
     },
     async onSubmit(values) {
       try {
@@ -91,19 +91,21 @@ export default {
             values.email,
             values.passwd,
             values.username,
-            this.avatar
+            this.avatar,
           );
           if (res.state === 0) {
-            this.$store.commit("setUserInfo", res.data);
-            const { username, pin, avatar, power } = res.data;
+            this.$store.commit('setUserInfo', res.data);
+            const {
+              username, pin, avatar, power,
+            } = res.data;
             setCookie({
               username,
               pin,
               avatar,
               power,
             });
-            this.$toast.success("修改成功");
-            this.$router.push("/home/my");
+            this.$toast.success('修改成功');
+            this.$router.push('/home/my');
           } else {
             this.$toast(res.msg);
           }
@@ -112,11 +114,11 @@ export default {
             values.email,
             values.passwd,
             values.username,
-            this.avatar
+            this.avatar,
           );
           if (res.state === 0) {
-            this.$toast.success("注册成功");
-            this.$router.push("/home/my");
+            this.$toast.success('注册成功');
+            this.$router.push('/home/my');
           } else {
             this.$toast(res.msg);
           }
@@ -127,8 +129,8 @@ export default {
     },
     async init() {
       if (this.$route.query.pin) {
-        this.title = "修改个人信息";
-        this.btnText = "修改";
+        this.title = '修改个人信息';
+        this.btnText = '修改';
         const res = await this.$api.queryInfo(this.$route.query.pin);
         if (res.state === 0) {
           this.pin = res.data.pin;
@@ -137,32 +139,32 @@ export default {
           this.avatar = res.data.avatar;
           this.fileList.push({ url: res.data.avatar });
         } else {
-          this.$toast("网络异常，请重试~");
+          this.$toast('网络异常，请重试~');
           setTimeout(() => {
             this.$router.goBack();
           }, 200);
         }
       } else {
-        this.title = "新用户注册";
-        this.btnText = "注册";
-        this.email = "";
-        this.username = "";
-        this.passwd = "";
-        this.avatar = "";
+        this.title = '新用户注册';
+        this.btnText = '注册';
+        this.email = '';
+        this.username = '';
+        this.passwd = '';
+        this.avatar = '';
       }
     },
     async afterRead(file) {
       this.isloading = true;
       const param = new FormData();
-      param.append("avatar", file.file);
+      param.append('avatar', file.file);
       const res = await this.$api.upload(param);
-      if (res.status === "success") {
-        this.$toast("上传成功");
+      if (res.status === 'success') {
+        this.$toast('上传成功');
         this.avatar = res.data.url;
         this.isloading = false;
       } else {
-        file.status = "failed";
-        file.message = "上传失败";
+        this.fileList[0].status = 'failed';
+        this.fileList[0].message = '上传失败';
       }
     },
     beforeDelete() {

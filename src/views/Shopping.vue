@@ -8,7 +8,7 @@
         @click-right="del"
       >
         <template #right>
-          <van-icon name="delete-o" size="55"/>
+          <van-icon name="delete-o" size="55" />
         </template>
       </van-nav-bar>
     </div>
@@ -27,6 +27,7 @@
       />
     </div>
     <van-submit-bar
+      :loading="isloading"
       :price="allMoney"
       :button-text="`去结算(${totalNum})`"
       @submit="onSubmit"
@@ -55,6 +56,7 @@ export default {
       result: [],
       shopCatlist: [],
       checked: false,
+      isloading: false,
     };
   },
   computed: {
@@ -86,7 +88,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getShopCat', 'deleteCart']),
+    ...mapActions(['getShopCat', 'deleteCart', 'addOrder', 'changeStatus']),
     ...mapMutations(['storageChange']),
     async getAllData() {
       this.getShopCat();
@@ -96,6 +98,18 @@ export default {
         this.$refs.checkboxGroup.toggleAll(true);
       } else {
         this.$refs.checkboxGroup.toggleAll(false);
+      }
+    },
+    noToastDel() {
+      try {
+        this.result.forEach((item) => {
+          // eslint-disable-next-line no-underscore-dangle
+          this.deleteCart({ _id: item });
+          this.$refs.checkboxGroup.toggleAll(false);
+        });
+        this.getShopCat();
+      } catch (error) {
+        console.log(error);
       }
     },
     async del() {
@@ -120,7 +134,44 @@ export default {
         }
       }
     },
-    onSubmit() {},
+    async onSubmit() {
+      this.isloading = true;
+      if (this.result.length === 0) {
+        Toast('你没有选中商品');
+        this.isloading = false;
+      } else {
+        try {
+          // eslint-disable-next-line no-underscore-dangle
+          const resArr = this.shopCatList.filter((item) => this.result.includes(item._id));
+          const productList = [];
+          resArr.forEach((item) => {
+            // eslint-disable-next-line no-underscore-dangle
+            productList.push({ id: item.productId, num: item.p_num });
+          });
+          const res = await this.addOrder({
+            product_list: productList,
+            pay_num: this.allMoney / 100,
+          });
+          if (res) {
+            this.noToastDel();
+            Toast.success('下单成功');
+            this.$router.push({
+              path: '/order',
+              query: {
+                status: 1,
+              },
+            });
+          } else {
+            Toast.fail('下单失败');
+          }
+          this.isloading = false;
+        } catch (e) {
+          console.log(e);
+          Toast.fail('下单失败');
+          this.isloading = false;
+        }
+      }
+    },
   },
   created() {
     this.getAllData();

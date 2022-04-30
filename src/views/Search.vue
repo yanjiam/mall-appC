@@ -38,6 +38,7 @@
     <div class="goods-list" v-if="!showList">
       <van-list
         v-model="loading"
+        offest="100"
         :finished="finished"
         finished-text="没有了"
         @load="onLoad"

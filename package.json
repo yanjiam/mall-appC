@@ -15,6 +15,7 @@
     "git": "^0.1.5",
     "js-cookie": "^3.0.1",
     "lib-flexible": "^0.3.2",
+    "moment": "^2.29.3",
     "postcss-px2rem": "^0.3.0",
     "vant": "^2.12.12",
     "vue": "^2.6.11",

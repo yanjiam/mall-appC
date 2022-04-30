@@ -19,6 +19,7 @@
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
         <van-list
           v-model="loading"
+          offest="100"
           :finished="finished"
           finished-text="没有了"
           @load="onLoad"
