@@ -48,7 +48,6 @@
           v-for="item in goodsList"
           :key="item.id"
           v-bind="item"
-          :num="counterMap[item.id]"
         ></goods-card>
       </van-list>
     </div>
@@ -59,6 +58,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import goodsCard from '../components/GoodsCard.vue';
 import myHistory from '../components/MyHistory.vue';
 
@@ -84,9 +84,12 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      shopCatList: (state) => state.shopCatList,
+    }),
     badge() {
-      const count = Object.values(this.counterMap).reduce(
-        (prev, next) => prev + next,
+      const count = Object.values(this.shopCatList).reduce(
+        (prev, next) => prev + next.p_num,
         0,
       );
       if (count > 99) {
@@ -99,10 +102,15 @@ export default {
     async onLoad() {
       const value = await this.$api.search(this.value, this.page, this.size);
       if (value.state !== 0) return;
-      this.goodsList = [...this.goodsList, ...value.data];
+      value.data = value.data.map((item) => ({
+        ...item,
+        // eslint-disable-next-line no-underscore-dangle
+        productId: item._id,
+      }));
+      this.goodsList = [...this.goodsList, ...value?.data];
       this.total = value.total;
       this.loading = false;
-      if (this.goodsList?.length >= this.total) {
+      if (this.goodsList.length >= this.total) {
         this.finished = true;
       } else {
         this.page += 1;
